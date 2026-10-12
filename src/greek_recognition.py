@@ -56,7 +56,7 @@ class GreekTransform:
 #
 # Returns:
 # model (MyNetwork) - modified network with frozen weights and new output layer
-def build_greek_model(model_path='mnist_model.pth'):
+def build_greek_model(model_path='models/mnist_model.pth'):
     model = MyNetwork()
     model.load_state_dict(torch.load(model_path, weights_only=True))
 
@@ -162,9 +162,9 @@ def plot_greek_training(losses, accuracies):
     ax2.grid(True)
 
     plt.tight_layout()
-    plt.savefig('greek_training_curves.png')
+    plt.savefig('outputs/greek_training_curves.png')
     plt.show()
-    print("Training curves saved to greek_training_curves.png")
+    print("Training curves saved to outputs/greek_training_curves.png")
 
 
 # Preprocesses a custom Greek letter image for classification. Resizes
@@ -260,9 +260,9 @@ def test_custom_greek_images(model, image_dir):
 
     plt.suptitle('Custom Greek Letters - Network Predictions', fontsize=14)
     plt.tight_layout()
-    plt.savefig('custom_greek_predictions.png')
+    plt.savefig('outputs/custom_greek_predictions.png')
     plt.show()
-    print("Custom Greek predictions saved to custom_greek_predictions.png")
+    print("Custom Greek predictions saved to outputs/custom_greek_predictions.png")
 
 
 # Main function that orchestrates the Greek letter transfer learning
@@ -274,8 +274,10 @@ def test_custom_greek_images(model, image_dir):
 # Arguments:
 # argv (list) - command line arguments: [training_path] [custom_test_path]
 def main(argv):
-    training_set_path = 'greek_train'
-    custom_test_path = 'greek_custom'
+    os.makedirs('outputs', exist_ok=True)
+
+    training_set_path = 'samples/greek_train'
+    custom_test_path = 'samples/greek_custom'
     n_epochs = 50
     learning_rate = 0.01
     momentum = 0.5
@@ -306,8 +308,8 @@ def main(argv):
 
     plot_greek_training(losses, accuracies)
 
-    torch.save(model.state_dict(), 'greek_model.pth')
-    print("Greek model saved to greek_model.pth\n")
+    torch.save(model.state_dict(), 'models/greek_model.pth')
+    print("Greek model saved to models/greek_model.pth\n")
 
     # Test on custom Greek letter images if directory exists
     if os.path.isdir(custom_test_path):
@@ -315,7 +317,7 @@ def main(argv):
         test_custom_greek_images(model, custom_test_path)
     else:
         print(f"\nNo custom test directory found at '{custom_test_path}'.")
-        print("To test custom images, run: python greek_recognition.py greek_train greek_custom")
+        print("To test custom images, run: python src/greek_recognition.py samples/greek_train samples/greek_custom")
 
 
 if __name__ == "__main__":

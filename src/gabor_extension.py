@@ -10,6 +10,7 @@
 # by side to evaluate learned vs hand-crafted feature extraction.
 
 import sys
+import os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -114,9 +115,9 @@ def plot_filter_comparison(gabor_filters, learned_filters):
 
     plt.suptitle('Gabor Filters vs Learned Conv1 Filters', fontsize=14)
     plt.tight_layout()
-    plt.savefig('gabor_vs_learned_filters.png')
+    plt.savefig('outputs/gabor_vs_learned_filters.png')
     plt.show()
-    print("Filter comparison saved to gabor_vs_learned_filters.png")
+    print("Filter comparison saved to outputs/gabor_vs_learned_filters.png")
 
 
 # Applies each of the 10 Gabor filters to the first MNIST training
@@ -155,9 +156,9 @@ def plot_gabor_filter_effects(gabor_filters):
 
     plt.suptitle('Gabor Filter Effects on First Training Image')
     plt.tight_layout()
-    plt.savefig('gabor_filter_effects.png')
+    plt.savefig('outputs/gabor_filter_effects.png')
     plt.show()
-    print("Gabor filter effects saved to gabor_filter_effects.png")
+    print("Gabor filter effects saved to outputs/gabor_filter_effects.png")
 
 
 # Loads the MNIST training and test datasets with standard normalization
@@ -288,9 +289,9 @@ def plot_training_comparison(gabor_losses, gabor_accs, learned_losses, learned_a
     ax2.grid(True)
 
     plt.tight_layout()
-    plt.savefig('gabor_vs_learned_training.png')
+    plt.savefig('outputs/gabor_vs_learned_training.png')
     plt.show()
-    print("Training comparison saved to gabor_vs_learned_training.png")
+    print("Training comparison saved to outputs/gabor_vs_learned_training.png")
 
 
 # Main function that orchestrates the Gabor filter experiment.
@@ -302,6 +303,8 @@ def plot_training_comparison(gabor_losses, gabor_accs, learned_losses, learned_a
 # Arguments:
 # argv (list) - command line arguments passed from sys.argv
 def main(argv):
+    os.makedirs('outputs', exist_ok=True)
+
     n_epochs = 5
     learning_rate = 0.01
     momentum = 0.5
@@ -385,9 +388,9 @@ def main(argv):
         learned_test_losses, learned_test_accs
     )
 
-    torch.save(gabor_model.state_dict(), 'gabor_model.pth')
+    torch.save(gabor_model.state_dict(), 'models/gabor_model.pth')
     print()
-    print("Gabor model saved to gabor_model.pth")
+    print("Gabor model saved to models/gabor_model.pth")
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ from mnist_recognition import MyNetwork
 #
 # Returns:
 # model (MyNetwork) - the trained network ready for inference
-def load_model(model_path='mnist_model.pth'):
+def load_model(model_path='models/mnist_model.pth'):
     model = MyNetwork()
     model.load_state_dict(torch.load(model_path, weights_only=True))
     model.eval()
@@ -138,9 +138,9 @@ def plot_custom_predictions(images, predictions, expected_labels=None):
 
     plt.suptitle('Custom Handwritten Digits - Network Predictions', fontsize=14)
     plt.tight_layout()
-    plt.savefig('custom_digit_predictions.png')
+    plt.savefig('outputs/custom_digit_predictions.png')
     plt.show()
-    print("Custom predictions plot saved to custom_digit_predictions.png")
+    print("Custom predictions plot saved to outputs/custom_digit_predictions.png")
 
 
 # Main function that orchestrates testing on custom handwritten digit
@@ -151,14 +151,16 @@ def plot_custom_predictions(images, predictions, expected_labels=None):
 # Arguments:
 # argv (list) - command line arguments: [image_directory]
 def main(argv):
-    image_dir = 'digits'
+    os.makedirs('outputs', exist_ok=True)
+
+    image_dir = 'samples/digits'
 
     if len(argv) > 1:
         image_dir = argv[1]
 
     if not os.path.isdir(image_dir):
         print(f"Error: Directory '{image_dir}' does not exist.")
-        print("Usage: python test_custom_digits.py [image_directory]")
+        print("Usage: python src/test_custom_digits.py [image_directory]")
         return
 
     image_files = sorted([
@@ -185,7 +187,7 @@ def main(argv):
 
     print(f"Found {len(image_paths)} images in '{image_dir}'.\n")
 
-    model = load_model('mnist_model.pth')
+    model = load_model('models/mnist_model.pth')
     images, predictions = evaluate_custom_digits(model, image_paths)
     plot_custom_predictions(images, predictions, expected_labels)
 

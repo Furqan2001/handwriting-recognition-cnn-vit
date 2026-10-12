@@ -8,6 +8,7 @@
 # with their predicted labels displayed above each image.
 
 import sys
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -129,9 +130,9 @@ def plot_predictions(images, predictions, labels):
 
     plt.suptitle('First 9 Test Digits with Predictions', fontsize=14)
     plt.tight_layout()
-    plt.savefig('test_predictions.png')
+    plt.savefig('outputs/test_predictions.png')
     plt.show()
-    print("Predictions plot saved to test_predictions.png")
+    print("Predictions plot saved to outputs/test_predictions.png")
 
 
 # Main function that orchestrates the evaluation pipeline. Loads the
@@ -142,7 +143,9 @@ def plot_predictions(images, predictions, labels):
 # Arguments:
 # argv (list) - command line arguments passed from sys.argv
 def main(argv):
-    model = load_model('mnist_model.pth')
+    os.makedirs('outputs', exist_ok=True)
+
+    model = load_model('models/mnist_model.pth')
     test_loader = load_test_data()
 
     # Evaluate the first 10 examples

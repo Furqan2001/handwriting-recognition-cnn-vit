@@ -233,8 +233,8 @@ def run_experiment(config, train_loader, test_loader, device):
 #
 # Arguments:
 # results (list)   - list of result dictionaries from run_experiment
-# filename (str)   - output CSV file path (default 'experiment_results.csv')
-def save_results_csv(results, filename='experiment_results.csv'):
+# filename (str)   - output CSV file path (default 'outputs/experiment_results.csv')
+def save_results_csv(results, filename='outputs/experiment_results.csv'):
     fieldnames = ['name', 'depth', 'embed_dim', 'num_heads', 'mlp_dim',
                   'dropout', 'patch_size', 'stride', 'total_params',
                   'best_test_acc', 'final_test_acc', 'final_train_acc',
@@ -340,7 +340,7 @@ def plot_training_curves(results, dim_name, dim_key, filename):
 # Arguments:
 # all_results (dict) - dictionary mapping dimension names to result lists
 # filename (str)     - output file path for the saved plot
-def plot_summary(all_results, filename='experiment_summary.png'):
+def plot_summary(all_results, filename='outputs/experiment_summary.png'):
     fig, axes = plt.subplots(1, 3, figsize=(16, 5))
 
     dim_configs = [
@@ -386,6 +386,8 @@ def plot_summary(all_results, filename='experiment_summary.png'):
 # Arguments:
 # argv (list) - command line arguments passed from sys.argv
 def main(argv):
+    os.makedirs('outputs', exist_ok=True)
+
     if torch.backends.mps.is_available():
         device = torch.device('mps')
     elif torch.cuda.is_available():
@@ -638,19 +640,19 @@ def main(argv):
     print("\nGenerating plots...")
 
     plot_dimension_results(all_results['depth'], 'Transformer Depth', 'depth',
-                           'exp_depth_results.png')
+                           'outputs/exp_depth_results.png')
     plot_training_curves(all_results['depth'], 'Depth', 'depth',
-                         'exp_depth_curves.png')
+                         'outputs/exp_depth_curves.png')
 
     plot_dimension_results(all_results['embed_dim'], 'Embedding Dimension', 'embed_dim',
-                           'exp_embed_results.png')
+                           'outputs/exp_embed_results.png')
     plot_training_curves(all_results['embed_dim'], 'Embed Dim', 'embed_dim',
-                         'exp_embed_curves.png')
+                         'outputs/exp_embed_curves.png')
 
     plot_dimension_results(all_results['num_heads'], 'Number of Heads', 'num_heads',
-                           'exp_heads_results.png')
+                           'outputs/exp_heads_results.png')
     plot_training_curves(all_results['num_heads'], 'Heads', 'num_heads',
-                         'exp_heads_curves.png')
+                         'outputs/exp_heads_curves.png')
 
     # Summary comparison plot
     plot_summary(all_results)

@@ -8,6 +8,7 @@
 # OpenCV's filter2D to show what features each filter detects.
 
 import sys
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -32,7 +33,7 @@ from mnist_recognition import MyNetwork
 #
 # Returns:
 # model (MyNetwork) - the trained network ready for inference
-def load_model(model_path='mnist_model.pth'):
+def load_model(model_path='models/mnist_model.pth'):
     model = MyNetwork()
     model.load_state_dict(torch.load(model_path, weights_only=True))
     model.eval()
@@ -82,9 +83,9 @@ def visualize_first_layer_filters(model):
 
     plt.suptitle('Conv1 Layer Filters (5x5)')
     plt.tight_layout()
-    plt.savefig('conv1_filters.png')
+    plt.savefig('outputs/conv1_filters.png')
     plt.show()
-    print("Conv1 filters saved to conv1_filters.png")
+    print("Conv1 filters saved to outputs/conv1_filters.png")
 
 
 # Applies all 10 conv1 filters to the first training image using
@@ -132,9 +133,9 @@ def visualize_filter_effects(model):
 
     plt.suptitle('Conv1 Filters and Their Effects on First Training Image')
     plt.tight_layout()
-    plt.savefig('filter_effects.png')
+    plt.savefig('outputs/filter_effects.png')
     plt.show()
-    print("Filter effects saved to filter_effects.png")
+    print("Filter effects saved to outputs/filter_effects.png")
 
 
 # Main function that orchestrates the network examination. Loads the
@@ -144,7 +145,9 @@ def visualize_filter_effects(model):
 # Arguments:
 # argv (list) - command line arguments passed from sys.argv
 def main(argv):
-    model = load_model('mnist_model.pth')
+    os.makedirs('outputs', exist_ok=True)
+
+    model = load_model('models/mnist_model.pth')
     print_model_info(model)
 
     # Visualize the first layer filters

@@ -9,6 +9,7 @@
 # plots training and test error curves, and saves the trained model.
 
 import sys
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -439,9 +440,9 @@ def plot_error_curves(train_losses, test_losses, train_accuracies, test_accuraci
     ax2.grid(True)
 
     plt.tight_layout()
-    plt.savefig('transformer_error_curves.png')
+    plt.savefig('outputs/transformer_error_curves.png')
     plt.show()
-    print("Error curves saved to transformer_error_curves.png")
+    print("Error curves saved to outputs/transformer_error_curves.png")
 
 
 # Main function that orchestrates the full Vision Transformer training
@@ -453,6 +454,8 @@ def plot_error_curves(train_losses, test_losses, train_accuracies, test_accuraci
 # Arguments:
 # argv (list) - command line arguments passed from sys.argv
 def main(argv):
+    os.makedirs('outputs', exist_ok=True)
+
     # Create the configuration with default settings
     config = NetConfig()
 
@@ -513,8 +516,8 @@ def main(argv):
     plot_error_curves(train_losses, test_losses, train_accuracies, test_accuracies)
 
     # Save the trained model
-    torch.save(model.state_dict(), 'transformer_model.pth')
-    print("Model saved to transformer_model.pth")
+    torch.save(model.state_dict(), 'models/transformer_model.pth')
+    print("Model saved to models/transformer_model.pth")
 
     # Print config summary
     print("\nConfiguration:")

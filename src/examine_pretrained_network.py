@@ -8,6 +8,7 @@
 # intermediate activation maps from the first two conv+ReLU stages.
 
 import sys
+import os
 import torch
 import torch.nn as nn
 import torchvision
@@ -181,6 +182,8 @@ def visualize_activations(model, image_tensor, filename):
 # Arguments:
 # argv (list) - command line arguments passed from sys.argv
 def main(argv):
+    os.makedirs('outputs', exist_ok=True)
+
     # Load pretrained VGG16
     model = load_pretrained_vgg16()
 
@@ -190,9 +193,9 @@ def main(argv):
 
     # Visualize conv1 and conv2 filters (first 16)
     print("Visualizing Conv1 filters...")
-    visualize_conv_filters(conv1_weights, 'VGG16 Conv1', 'vgg16_conv1_filters.png')
+    visualize_conv_filters(conv1_weights, 'VGG16 Conv1', 'outputs/vgg16_conv1_filters.png')
     print("Visualizing Conv2 filters...")
-    visualize_conv_filters(conv2_weights, 'VGG16 Conv2', 'vgg16_conv2_filters.png')
+    visualize_conv_filters(conv2_weights, 'VGG16 Conv2', 'outputs/vgg16_conv2_filters.png')
 
     # Load an MNIST digit for visualization
     transform = transforms.Compose([transforms.ToTensor()])
@@ -203,7 +206,7 @@ def main(argv):
     image_np = image.squeeze(0).numpy()
     print(f"\nUsing MNIST digit '{label}' for filter effect visualization")
 
-    visualize_filter_effects(model, image_np, 'VGG16 Conv1', 'vgg16_filter_effects.png')
+    visualize_filter_effects(model, image_np, 'VGG16 Conv1', 'outputs/vgg16_filter_effects.png')
 
     # For activations, VGG16 expects 3-channel 224x224 input
     # Resize and replicate the MNIST digit to 3 channels
@@ -219,7 +222,7 @@ def main(argv):
     vgg_input = vgg_transform(img_pil).unsqueeze(0)
 
     print("Visualizing layer activations...")
-    visualize_activations(model, vgg_input, 'vgg16_activations.png')
+    visualize_activations(model, vgg_input, 'outputs/vgg16_activations.png')
 
 
 if __name__ == "__main__":

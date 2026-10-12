@@ -9,6 +9,7 @@
 # error curves, and saves the trained model to a file for reuse.
 
 import sys
+import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -180,9 +181,9 @@ def plot_error_curves(train_losses, test_losses, train_accuracies, test_accuraci
     ax2.grid(True)
 
     plt.tight_layout()
-    plt.savefig('error_curves.png')
+    plt.savefig('outputs/error_curves.png')
     plt.show()
-    print("Error curves saved to error_curves.png")
+    print("Error curves saved to outputs/error_curves.png")
 
 
 # Plots the first six example digits from a DataLoader in a 2x3 grid
@@ -205,9 +206,9 @@ def plot_first_six(data_loader):
 
     plt.suptitle("First 6 Test Digits from MNIST Dataset")
     plt.tight_layout()
-    plt.savefig('first_six_digits.png')
+    plt.savefig('outputs/first_six_digits.png')
     plt.show()
-    print("Plot saved to first_six_digits.png")
+    print("Plot saved to outputs/first_six_digits.png")
 
 
 # Main function that orchestrates the full MNIST training pipeline.
@@ -218,6 +219,8 @@ def plot_first_six(data_loader):
 # Arguments:
 # argv (list) - command line arguments passed from sys.argv
 def main(argv):
+    os.makedirs('outputs', exist_ok=True)
+
     n_epochs = 5
     learning_rate = 0.01
     momentum = 0.5
@@ -250,12 +253,12 @@ def main(argv):
 
     plot_error_curves(train_losses, test_losses, train_accuracies, test_accuracies)
 
-    torch.save(model.state_dict(), 'mnist_model.pth')
-    print("Trained model saved to mnist_model.pth")
+    torch.save(model.state_dict(), 'models/mnist_model.pth')
+    print("Trained model saved to models/mnist_model.pth")
 
     # Save the optimizer state for potential future training continuation
-    torch.save(optimizer.state_dict(), 'mnist_optimizer.pth')
-    print("Optimizer state saved to mnist_optimizer.pth")
+    torch.save(optimizer.state_dict(), 'models/mnist_optimizer.pth')
+    print("Optimizer state saved to models/mnist_optimizer.pth")
 
     return
 

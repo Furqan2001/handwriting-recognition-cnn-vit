@@ -16,34 +16,37 @@ automated architecture search on Fashion-MNIST.
 | Frozen Gabor first layer vs. learned first layer | Gabor network matches or beats the learned one at every epoch |
 
 <p align="center">
-  <img src="images/used/error_curves.png" width="48%" alt="CNN training curves">
-  <img src="images/used/transformer_error_curves.png" width="48%" alt="ViT training curves">
+  <img src="results/error_curves.png" width="48%" alt="CNN training curves">
+  <img src="results/transformer_error_curves.png" width="48%" alt="ViT training curves">
 </p>
 
 ## Project structure
 
-| Script                          | What it does                                                                                               |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `mnist_recognition.py`          | Defines and trains the CNN (`MyNetwork`) on MNIST, plots loss and accuracy curves, saves `mnist_model.pth` |
-| `evaluate_model.py`             | Loads the trained CNN and shows its outputs and predictions for the first test images                      |
-| `test_custom_digits.py`         | Runs the CNN on your own handwritten digit photos (defaults to `digits/`)                                  |
-| `examine_network.py`            | Prints the architecture, plots the 10 learned conv1 filters, and applies them to a digit with OpenCV       |
-| `greek_recognition.py`          | Transfer learning: freezes the MNIST CNN, swaps in a 3-class head, and trains it on `greek_train/`         |
-| `gabor_extension.py`            | Replaces conv1 with a fixed bank of Gabor filters and compares it with a fully learned network             |
-| `examine_pretrained_network.py` | Shows the filters, filter effects and activations of the first layers of an ImageNet-pretrained VGG16      |
-| `mnist_transformer.py`          | Vision Transformer built from scratch (patch embedding, positional encoding, encoder stack, MLP head)      |
-| `mnist_experiment.py`           | Automated search over ViT depth, embedding size and number of heads on Fashion-MNIST                       |
+```
+├── src/          # all scripts
+├── models/       # pretrained weights (.pth)
+├── samples/      # handwritten test and training images
+│   ├── digits/          # 10 digits (0–9) for testing the CNN
+│   ├── greek_train/     # 27 training images (9 each of alpha, beta, gamma)
+│   └── greek_custom/    # 23 new Greek letters for testing
+├── results/      # result plots shown in this README
+└── outputs/      # plots generated when you run the scripts (not tracked)
+```
 
-Data folders:
+| Script                              | What it does                                                                                                |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `src/mnist_recognition.py`          | Defines and trains the CNN (`MyNetwork`) on MNIST, plots loss and accuracy curves, saves `mnist_model.pth`  |
+| `src/evaluate_model.py`             | Loads the trained CNN and shows its outputs and predictions for the first test images                       |
+| `src/test_custom_digits.py`         | Runs the CNN on your own handwritten digit photos (defaults to `samples/digits/`)                           |
+| `src/examine_network.py`            | Prints the architecture, plots the 10 learned conv1 filters, and applies them to a digit with OpenCV        |
+| `src/greek_recognition.py`          | Transfer learning: freezes the MNIST CNN, swaps in a 3-class head, and trains it on `samples/greek_train/`  |
+| `src/gabor_extension.py`            | Replaces conv1 with a fixed bank of Gabor filters and compares it with a fully learned network              |
+| `src/examine_pretrained_network.py` | Shows the filters, filter effects and activations of the first layers of an ImageNet-pretrained VGG16       |
+| `src/mnist_transformer.py`          | Vision Transformer built from scratch (patch embedding, positional encoding, encoder stack, MLP head)       |
+| `src/mnist_experiment.py`           | Automated search over ViT depth, embedding size and number of heads on Fashion-MNIST                        |
 
-- `digits/`: 10 handwritten digits (0–9) for testing the CNN
-- `greek_train/`: 27 training images (9 each of alpha, beta and gamma)
-- `greek_custom/`: 23 new handwritten Greek letters for testing
-- `images/used/`: saved result plots
-
-Pretrained weights (`mnist_model.pth`, `greek_model.pth`, `gabor_model.pth`,
-`transformer_model.pth`) are included, so you can run the evaluation scripts without
-training first.
+Pretrained weights for all four models are included in `models/`, so you can run the
+evaluation scripts without training first.
 
 ## Getting started
 
@@ -58,29 +61,30 @@ MNIST and Fashion-MNIST download automatically to `./data` the first time you ru
 
 ## Usage
 
-Run every script from the repository root. Plots are saved as PNG files in that folder.
+Run every script from the repository root. Plots are saved to `outputs/` and trained
+models to `models/`.
 
 ```bash
-# Train the CNN (writes mnist_model.pth)
-python mnist_recognition.py
+# Train the CNN (writes models/mnist_model.pth)
+python src/mnist_recognition.py
 
 # Evaluate it and look inside
-python evaluate_model.py
-python examine_network.py
-python test_custom_digits.py [image_dir]        # default: digits/
+python src/evaluate_model.py
+python src/examine_network.py
+python src/test_custom_digits.py [image_dir]        # default: samples/digits/
 
-# Transfer learning to Greek letters (needs mnist_model.pth)
-python greek_recognition.py [train_dir] [test_dir]   # defaults: greek_train/ greek_custom/
+# Transfer learning to Greek letters (needs models/mnist_model.pth)
+python src/greek_recognition.py [train_dir] [test_dir]   # defaults: samples/greek_train/ samples/greek_custom/
 
 # Gabor filters vs. learned filters
-python gabor_extension.py
+python src/gabor_extension.py
 
 # Pretrained VGG16 filters and activations
-python examine_pretrained_network.py
+python src/examine_pretrained_network.py
 
 # Vision Transformer
-python mnist_transformer.py
-python mnist_experiment.py      # long run: many ViT trainings on Fashion-MNIST
+python src/mnist_transformer.py
+python src/mnist_experiment.py      # long run: many ViT trainings on Fashion-MNIST
 ```
 
 To test your own images, use dark ink on a light background. The scripts convert each image
@@ -100,7 +104,7 @@ Flatten(320) → Linear(50) → ReLU → Linear(10) → LogSoftmax
 
 It trains for 5 epochs with SGD (lr 0.01, momentum 0.5).
 
-<p align="center"><img src="images/used/conv1_filters.png" width="60%" alt="Learned conv1 filters"></p>
+<p align="center"><img src="results/conv1_filters.png" width="60%" alt="Learned conv1 filters"></p>
 
 ### Transfer learning to Greek letters
 
@@ -108,7 +112,7 @@ All of the MNIST network's weights are frozen and only a new final layer (50 →
 Training stops early once it gets every training example right. On 23 handwritten letters it
 had never seen, it classified all 23 correctly.
 
-<p align="center"><img src="images/used/custom_greek_predictions.png" width="60%" alt="Greek letter predictions"></p>
+<p align="center"><img src="results/custom_greek_predictions.png" width="60%" alt="Greek letter predictions"></p>
 
 ### Gabor filters vs. learned filters
 
@@ -117,7 +121,7 @@ and the rest of the network is trained as usual. The fixed Gabor network converg
 ends slightly ahead of the network that learns all its filters (~98.3% vs. ~98.1% test
 accuracy after 5 epochs).
 
-<p align="center"><img src="images/used/gabor_vs_learned_training.png" width="80%" alt="Gabor vs learned training"></p>
+<p align="center"><img src="results/gabor_vs_learned_training.png" width="80%" alt="Gabor vs learned training"></p>
 
 ### Vision Transformer
 
