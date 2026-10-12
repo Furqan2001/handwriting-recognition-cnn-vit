@@ -1,0 +1,23 @@
+# Datasets (downloaded automatically by torchvision on first run)
+data/
+
+# Old submission materials
+files/
+
+# Generated outputs written to the project root by the scripts
+# (curated copies live in images/)
+/*.png
+/*.csv
+/mnist_optimizer.pth
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
